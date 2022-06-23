@@ -3,12 +3,17 @@ var gamePattern = [];
 var buttonColors = ["red", "blue", "green", "yellow"];
 var userClickedPattern = [];
 var level = 0;
+var started = false;
 
 
 //Start Game
-if (level === 0){
-$(document).on("keydown", function(){nextSequence();});
-}
+
+$(document).keypress(function() {
+  if (started===false){
+    nextSequence();
+    started = true;
+  }
+});
 
 // Function to select a random NEXT color and level tracking
 
@@ -23,14 +28,7 @@ function nextSequence(){
   gamePattern.push(randomChosenColor);
 
   $("#" + randomChosenColor).fadeOut(100).fadeIn(100);
-
-  var audio = new Audio("sounds/"+randomChosenColor + ".mp3");
-  audio.play();
-
-  if(level > 0){
-    $(document).off("keydown");
-
-  }
+  playSound (randomChosenColor);
 }
 
 //User event listened click function as well as actions and sounds when clicked
@@ -68,13 +66,16 @@ function checkAnswer(currentLevel){
   else{
     $("h1").text("Game Over, Press Any Key to Restart");
     $("body").addClass("game-over");
-    var audio = new Audio("sounds/wrong.mp3");
-    audio.play();
+    playSound("wrong");
     setTimeout(function(){$("body").removeClass("game-over");},100);
-    level = 0;
-    gamePattern = [];
+      restartGame();
   }
-  if (level === 0){
-  $(document).on("keydown", function(){nextSequence();});
-  }
+}
+
+//Restart Game and clear levels and Game pattern
+
+function restartGame() {
+  level = 0;
+  gamePattern = [];
+  started = false;
 }
